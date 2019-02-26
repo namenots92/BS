@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">B&amp;S</string>
+    <string name="action_settings">Settings</string>
+    <string name="Splash">splash</string>
+    <string name="snbText">Sell and Buy</string>
+    <string name="textLogin">BUY AND SELL</string>
+    <string name="emailLogin">Email address here</string>
+    <string name="passwordLogin">Enter your password</string>
+    <string name="loginBtn">LOGIN</string>
+    <string name="createNewAccount">Not a user? Sign up here</string>
+    <string name="backToSignIn">Already a user? Sign in.</string>
+    <string name="creatAccountText">Create a new account here</string>
+    <string name="buttonRegister">REGISTER</string>
+    <string name="passwordHintReg">Enter a new password</string>
+    <string name="emailHintReg">Enter your email</string>
+    <string name="nameRegister">Enter your username</string>
+    <string name="icon">iconImg</string>
+
+
+    <string name="fragment_search">Search</string>
+    <string name="fragment_post">Post</string>
+    <string name="fragment_watchlist">Watch List</string>
+    <string name="fragment_account">Account</string>
+
+    <string name="action_add_favourite">Add to Favourites</string>
+    <string name="action_play_next">Play Next</string>
+    <string name="backdrop_title">LOVE MUSIC</string>
+    <string name="backdrop_subtitle">This season top 20 albums</string>
+    <string name="log_out">Log Out</string>
+    <string name="settingsAcc">Go to account settings</string>
+    <string name="title_activity_post">PostActivity</string>
+    <string name="title_activity_profile">ProfileActivity</string>
+
+
+</resources>
