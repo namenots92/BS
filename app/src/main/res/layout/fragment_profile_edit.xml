@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:background="@color/White">
+    <ScrollView
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:background="@color/White">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/White">
+
+            <android.support.design.widget.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?android:attr/actionBarSize"
+                    android:background="@color/White">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+                        <ImageView
+                            android:tint="@color/Black"
+                            android:layout_gravity="center_vertical"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:background="@drawable/button_round"
+                            android:id="@+id/back"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Edit Profile"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:textColor="@color/Black"
+                            android:layout_marginLeft="15sp"
+                            android:layout_gravity="center_vertical"/>
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"/>
+
+                        <ImageView
+                            android:id="@+id/confirm"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginRight="35dp"
+                            android:src="@drawable/ic_check_black_24dp"
+                            android:tint="@color/colorAccent" />
+                    </LinearLayout>
+                </android.support.v7.widget.Toolbar>
+            </android.support.design.widget.AppBarLayout>
+
+
+            <LinearLayout
+                android:layout_margin="20sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/White">
+
+                <TextView
+                    android:layout_marginLeft="10sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MY ACCOUNT"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="5px"
+                    android:background="@color/colorPrimary"/>
+                <ImageView
+                    android:layout_marginTop="20sp"
+                    android:layout_width="135sp"
+                    android:layout_height="135sp"
+                    android:id="@+id/profileImage"
+                    android:src="@mipmap/ic_launcher"
+                    android:layout_gravity="center"
+                    android:adjustViewBounds="true"
+                    android:layout_centerInParent="true"
+                    android:scaleType="centerCrop"/>
+
+                <TextView
+                    android:gravity="center"
+                    android:paddingTop="5sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="16sp"
+                    android:text="Change Photo"/>
+
+                <TextView
+                    android:paddingTop="20sp"
+                    android:paddingLeft="10sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Name"/>
+                <EditText
+                    android:padding="10sp"
+                    android:textSize="14sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/name"
+                    android:hint="Name"/>
+
+                <TextView
+                    android:layout_marginTop="30sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ACCOUNT ACTIONS"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="10sp"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="5px"
+                    android:background="@color/colorPrimary"/>
+
+                <Button
+                    android:id="@+id/logout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="20sp"
+                    android:textSize="16sp"
+                    android:text="Log Out"
+                    android:layout_gravity="start"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/Black"
+                    android:background="@color/White"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:focusable="true"
+                    android:clickable="true"/>
+
+                <Button
+                    android:id="@+id/deactivate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="20sp"
+                    android:textSize="16sp"
+                    android:text="Deactivate"
+                    android:layout_gravity="start"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/Black"
+                    android:background="@color/White"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:focusable="true"
+                    android:clickable="true" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>
+
+

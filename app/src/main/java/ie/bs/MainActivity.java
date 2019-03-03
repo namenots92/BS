@@ -11,6 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
@@ -29,6 +31,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -38,6 +41,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -49,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private ItemsAdapter adapter;
     private List<Items> itemsList;
     private Toolbar toolbar;
+    private  EditText editText;
 
     private FirebaseAuth mAuth;
     private DatabaseReference userRef;
@@ -67,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mAuth = FirebaseAuth.getInstance();
 
+        getUserInfo();
         itemsList = new ArrayList<>();
         adapter = new ItemsAdapter(this, itemsList);
 
@@ -76,12 +82,44 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
 
+
+        editText = findViewById(R.id.search);
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                filter(s.toString());
+            }
+        });
+
         prepareAlbums();
 
         if (mAuth.getCurrentUser() != null) {
             userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getUid());
+            userRef.keepSynced(true);
         }
 
+    }
+
+    private void filter(String text){
+        ArrayList<Items> filteredList = new ArrayList<>();
+
+        for (Items item : itemsList){
+            if(item.getName().toLowerCase().contains(text.toLowerCase())){
+                filteredList.add(item);
+            }
+        }
+
+        adapter.filterList(filteredList);
     }
 
     private void prepareAlbums() {
@@ -138,6 +176,19 @@ public class MainActivity extends AppCompatActivity {
         } else {
             userRef.child("online").setValue("true");
         }
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        if(currentUser != null){
+
+        }
+        userRef.child("online").setValue(ServerValue.TIMESTAMP);
+
     }
 
     private void sendToStart(){

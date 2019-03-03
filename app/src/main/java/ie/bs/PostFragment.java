@@ -32,7 +32,7 @@ public class PostFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
-        View view = inflater.inflate(R.layout.fragment_view_post, container,false);
+        View view = inflater.inflate(R.layout.fragment_view_post,container,false);
 
         desc = view.findViewById(R.id.input_description);
         city = view.findViewById(R.id.input_city);
@@ -40,7 +40,6 @@ public class PostFragment extends Fragment {
         imageView = view.findViewById(R.id.post_image);
         title = view.findViewById(R.id.input_title);
 
-        province = view.findViewById(R.id.input_state_province);
 
         post = view.findViewById(R.id.btn_post);
         post.setOnClickListener(new View.OnClickListener() {

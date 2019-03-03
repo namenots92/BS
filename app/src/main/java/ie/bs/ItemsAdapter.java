@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -97,6 +98,11 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.MyViewHolder
             }
             return false;
         }
+    }
+
+    public void filterList(ArrayList<Items> filteredList){
+        itemsList = filteredList;
+        notifyDataSetChanged();
     }
 
     @Override
