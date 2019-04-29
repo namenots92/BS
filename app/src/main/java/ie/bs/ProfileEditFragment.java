@@ -154,7 +154,7 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
     }
 
     private void saveUserInformation() { // saving data to the collection within the database.
-        ((SearchActivity)getActivity()).showProgressDialog("Saving Data..."); // displayed when the save (tick) is clicked
+        ((SearchActivity)getActivity()).showProgressDialog("Saving Data...");
 
         if(!mName.getText().toString().isEmpty())
             name = mName.getText().toString();

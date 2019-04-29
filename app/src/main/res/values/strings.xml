@@ -37,10 +37,7 @@
 
 
 
-    <string name="action_add_favourite">Add to Favourites</string>
-    <string name="action_play_next">Play Next</string>
-    <string name="backdrop_title">LOVE MUSIC</string>
-    <string name="backdrop_subtitle">This season top 20 albums</string>
+
     <string name="log_out">Log Out</string>
     <string name="settingsAcc">Go to account settings</string>
     <string name="title_activity_post">PostActivity</string>

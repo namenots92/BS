@@ -1,5 +1,5 @@
 package ie.bs;
-
+// host activity to the fragments
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -10,6 +10,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,12 +18,15 @@ import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 import ie.bs.model.Post;
 
@@ -41,6 +45,7 @@ public class SearchActivity extends AppCompatActivity {
     private DatabaseReference userRef;
 
     UserObject mUser = new UserObject();
+    public ArrayList<String> watchList = new ArrayList<>();
 
     //vars
     public SectionsPagerAdapter mPagerAdapter;
@@ -77,6 +82,43 @@ public class SearchActivity extends AppCompatActivity {
         } else {
             userRef.child("online").setValue("true"); // this adds a child to the database and sets the value of who is signed in.
         }
+    }
+
+    private void getUserWatchList() {
+        watchList.clear();
+        DatabaseReference userFollowingDB = FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getUid()).child("following");
+        userFollowingDB.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                if (dataSnapshot.exists()){
+                    String uid = dataSnapshot.getRef().getKey();
+                    if (uid != null && !watchList.contains(uid)){
+                        watchList.add(uid);
+                        return;
+                    }
+                }
+            }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    String uid = dataSnapshot.getRef().getKey();
+                    if (uid != null){
+                        watchList.remove(uid);
+                        return;
+                    }
+                }
+            }
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 
     @Override

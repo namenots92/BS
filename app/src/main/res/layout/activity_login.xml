@@ -66,8 +66,8 @@
 
     <Button
         android:id="@+id/login_button"
-        android:layout_width="96dp"
-        android:layout_height="48dp"
+        android:layout_width="124dp"
+        android:layout_height="46dp"
         android:layout_marginStart="56dp"
         android:layout_marginBottom="92dp"
         android:background="@drawable/button_round"
@@ -112,8 +112,8 @@
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/googleButton"
-        android:layout_width="115dp"
-        android:layout_height="53dp"
+        android:layout_width="147dp"
+        android:layout_height="51dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
@@ -130,8 +130,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="168dp"
+        android:layout_marginBottom="24dp"
         android:background="@drawable/button_round"
         android:text="Forgot Password"
         android:textColor="@color/White"

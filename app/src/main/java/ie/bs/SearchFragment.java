@@ -39,6 +39,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -61,7 +62,7 @@ public class SearchFragment extends Fragment {
 
     private String mPostId;
 
-
+    Post mPost;
 
     public ArrayList<Post> results = new ArrayList<>();
 
@@ -107,14 +108,12 @@ public class SearchFragment extends Fragment {
         mSearchText = (EditText) view.findViewById(R.id.input_search);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         mFrameLayout = (FrameLayout) view.findViewById(R.id.container);
-
         init();
-        //hideSoftKeyboard();
         setupPostsList();
+
+
         return view;
 
-        //final ImageLoader imageLoader = ImageLoader.getInstance();
-       // imageLoader.displayImage(getItem(position).getImage_path(), holder.image);
     }
 
 
@@ -124,9 +123,6 @@ public class SearchFragment extends Fragment {
 
         if(!post.isEmpty())
             return;
-
-
-        setupPostsList();
     }
 
     private void setupPostsList(){
@@ -146,24 +142,6 @@ public class SearchFragment extends Fragment {
         mAdapter = new PostListAdapter(results, post, this ,getContext());
         mRecyclerView.setAdapter(mAdapter);
 
-        mSearchText = view.findViewById(R.id.ic_search);
-        mSearchText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                filter(s.toString());
-            }
-        });
-
         getData();
 
 
@@ -177,23 +155,6 @@ public class SearchFragment extends Fragment {
 
     private void init(){
 
-        mSearchText = view.findViewById(R.id.search_toolbar);
-        mSearchText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                filter(s.toString());
-            }
-        });
 
         mFilters.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -234,18 +195,55 @@ public class SearchFragment extends Fragment {
         });
     }
 
-    private void filter(String text) {
-        ArrayList<Post> filteredList = new ArrayList<>();
+    private void addItemToWatchList(){
+// method to add items
 
-        for (Post post : results) {
-            if (post.getTitle().toLowerCase().contains(text.toLowerCase())) {
-                filteredList.add(post);
-            }
-        }
+        getPostInfo();
+        Log.d(TAG, "addItemToWatchList: adding item to watch list.");
 
-        mAdapter.filterList(filteredList);
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+
+        reference.child("watch_list")
+                .child(userId)
+                .child(mPostId)
+                .child("post_id")
+                .setValue(mPostId);
+
+        Toast.makeText(getActivity(), "Added to watch list", Toast.LENGTH_SHORT).show();
+
     }
 
+    private void getPostInfo(){
+        Log.d(TAG, "getPostInfo: getting the post information.");
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+
+        Query query = reference.child(getString(R.string.node_posts))
+                .orderByKey()
+                .equalTo(mPostId);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                DataSnapshot singleSnapshot = dataSnapshot.getChildren().iterator().next();
+                if(singleSnapshot != null){
+                    mPost = singleSnapshot.getValue(Post.class);
+                    if (mPost != null) {
+                        mPost.getPost_id();
+                    }
+                    Log.d(TAG, "onDataChange: found the post: " + mPost.getTitle());
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
 
     private void getPosts(){
 
@@ -339,19 +337,6 @@ public class SearchFragment extends Fragment {
         });
     }
 
-    private void hideSoftKeyboard(){
-        final Activity activity = getActivity();
-        final InputMethodManager inputManager = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        inputManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-    }
-
-    private Bitmap createOutline(Bitmap src){
-        Paint p = new Paint();
-        p.setMaskFilter(new BlurMaskFilter(2, BlurMaskFilter.Blur.OUTER));
-        return src.extractAlpha(p, null);
-    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -364,20 +349,11 @@ public class SearchFragment extends Fragment {
         getPosts();
     }
 
-    private void getFilters(){
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        mPrefCity = preferences.getString(getString(R.string.preferences_city), "");
-        mPrefStateProv = preferences.getString(getString(R.string.preferences_state_province), "");
-        mPrefCountry = preferences.getString(getString(R.string.preferences_country), "");
-
-        Log.d(TAG, "getFilters: got filters: \ncity: " + mPrefCity + "\nState/Prov: " + mPrefStateProv
-                + "\nCountry: " + mPrefCountry);
-    }
-
     private void clear() {
         this.results.clear();
         if(mAdapter!=null)
             mAdapter.notifyDataSetChanged();
     }
+
 
 }

@@ -1,5 +1,5 @@
 package ie.bs;
-//second assignment
+// this fragment isn't used as it would connect with the search fragment.
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -62,12 +62,10 @@ public class WatchListFragment extends Fragment {
         mPosts = new ArrayList<>();
         setupPostsList();
 
-        //reference for listening when items are added or removed from the watch list
         mReference = FirebaseDatabase.getInstance().getReference()
                 .child("watch_list")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-        //set the listener to the reference
         mReference.addValueEventListener(mLisenter);
 
     }
@@ -111,7 +109,7 @@ public class WatchListFragment extends Fragment {
         });
     }
 
-    private void getPosts(){
+    private void getPosts(){ // relay the posts
         if(mPostsIds.size() > 0){
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
@@ -139,7 +137,7 @@ public class WatchListFragment extends Fragment {
                 });
             }
         }else{
-            mAdapter.notifyDataSetChanged(); //still need to notify the adapter if the list is empty
+            mAdapter.notifyDataSetChanged(); // if the adapter is empty
         }
     }
 
