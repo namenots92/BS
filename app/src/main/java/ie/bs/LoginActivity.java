@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -27,16 +28,22 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+// Class to sign a user in, it is the first activity the user will see after the splash screen.
+// Connecting to firebase and checking if the user is signed up. As well a login, I have added a google sign in.
+// This will connect to the google sign in pop up, via the google sign in client API.
+// Once connected the user will be added to the list of users within the users tab of firebase, it will show what method the user took to sign in.
+
 public class LoginActivity extends AppCompatActivity {
 
     private Button loginButton;
     private SignInButton googleBtn;
 
+
     private TextInputLayout loginEmail, loginPassword;
 
     private ProgressDialog mLoginProgress;
     private FirebaseAuth mAuth;
-    private TextView linkRegBtn;
+    private TextView linkRegBtn, forgotbutton;
     GoogleSignInClient mGoogleSignInClient;
 
     @Override
@@ -55,20 +62,21 @@ public class LoginActivity extends AppCompatActivity {
         googleBtn = (SignInButton) findViewById(R.id.googleButton);
 
         linkRegBtn = (TextView) findViewById(R.id.createUserLink);
+        forgotbutton = (TextView) findViewById(R.id.forgotButton);
 
-        linkRegBtn.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
+        linkRegBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(intent);
             }
         });
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestIdToken(getString(R.string.default_web_client_id)) // the application will still run even with this error and it is connected to the parsing of the .json file created by google.
                 .requestEmail()
                 .build();
 
-        mGoogleSignInClient = GoogleSignIn.getClient(this,gso);
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,7 +85,7 @@ public class LoginActivity extends AppCompatActivity {
                 String eml = loginEmail.getEditText().getText().toString();
                 String pwd = loginPassword.getEditText().getText().toString();
 
-                if(!TextUtils.isEmpty(eml) && !TextUtils.isEmpty(pwd)){
+                if (!TextUtils.isEmpty(eml) && !TextUtils.isEmpty(pwd)) {
 
                     mLoginProgress.setTitle("Logging In");
                     mLoginProgress.setMessage("Please wait while we check your credentials");
@@ -88,8 +96,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
-        if (loginButton != null)
-        {
+        if (loginButton != null) {
             Log.v("Login", "Really got the login button.");
         }
 
@@ -100,7 +107,27 @@ public class LoginActivity extends AppCompatActivity {
                 startActivityForResult(signInIntent, 101);
             }
         });
+
+        forgotbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (loginEmail.getEditText().getText().toString().trim().length() > 0)
+                    FirebaseAuth.getInstance().sendPasswordResetEmail(loginEmail.getEditText().getText().toString())
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Snackbar.make(findViewById(R.id.login_layout), "Email Sent", Snackbar.LENGTH_LONG).show();
+                                    } else
+                                        Snackbar.make(findViewById(R.id.login_layout), "Something went wrong", Snackbar.LENGTH_LONG).show();
+                                }
+                            });
+            }
+        });
+
     }
+
 
 
     @Override
@@ -133,7 +160,7 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             //Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                            Intent i = new Intent(getApplicationContext(), SearchActivity.class);
                             startActivity(i);
                             finish();
                             Toast.makeText(LoginActivity.this, "User logged in sucessfully", Toast.LENGTH_SHORT).show();
@@ -158,9 +185,8 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                         if(task.isSuccessful()) {
-
                             mLoginProgress.dismiss();
-                            Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+                            Intent mainIntent = new Intent(LoginActivity.this, SearchActivity.class);
                             mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(mainIntent);
                             finish();

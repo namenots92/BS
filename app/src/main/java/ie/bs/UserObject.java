@@ -1,5 +1,6 @@
 package ie.bs;
 
+// created for the user containing their name email image and id
 public class UserObject {
     String  id,
             name,

@@ -36,6 +36,7 @@ public class RegisterActivity extends AppCompatActivity {
     private ProgressDialog mRegProgress;
 
 
+    // register the user and create the children for the User collection in the database
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,7 +116,7 @@ public class RegisterActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
                                 mRegProgress.dismiss();
-                                Intent mainIntent = new Intent(RegisterActivity.this, MainActivity.class);
+                                Intent mainIntent = new Intent(RegisterActivity.this, SearchActivity.class);
                                 startActivity(mainIntent);
                                 Toast.makeText(RegisterActivity.this, "Welcome, your registraiton was sucessful.", Toast.LENGTH_LONG).show();
                                 finish();

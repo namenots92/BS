@@ -7,16 +7,16 @@
     tools:context=".SplashScreen">
 
     <ImageView
-        android:layout_width="213dp"
-        android:layout_height="233dp"
+        android:layout_width="264dp"
+        android:layout_height="301dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="99dp"
-        android:layout_marginTop="240dp"
-        android:layout_marginEnd="98dp"
-        android:layout_marginBottom="257dp"
+        android:layout_marginStart="77dp"
+        android:layout_marginTop="182dp"
+        android:layout_marginEnd="70dp"
+        android:layout_marginBottom="248dp"
         android:contentDescription="@string/Splash"
         android:src="@drawable/icon"
         tools:layout_editor_absoluteX="108dp"
@@ -24,8 +24,8 @@
 
     <TextView
         android:id="@+id/splashText"
-        android:layout_width="168dp"
-        android:layout_height="47dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"

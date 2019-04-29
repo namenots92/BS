@@ -38,13 +38,17 @@ import ie.bs.UserObject;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import static android.app.Activity.RESULT_OK;
 
+// Profile Edit Fragment is a fragment that allows the user to update their profile image, name, logout or deactivate their account.
+// A new instance is created when the fragment is clicked on from the menu drop down. Once the fragment loads, the users name and image is also loaded by
+// checking the current user signed in from the Users colleciton. These are set to default when a user registers.
+
 public class ProfileEditFragment extends Fragment implements View.OnClickListener{
 
-    ImageView   mBack,
-            mConfirm;
+    ImageView   mBack;
 
     Button deactivateButton;
 
@@ -67,7 +71,7 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
     private static final String TAG = "ProfileEditFragment";
 
 
-    public static ProfileEditFragment newInstance(){
+    public static ProfileEditFragment newInstance(){ // new instance of this fragment is created
         ProfileEditFragment fragment = new ProfileEditFragment();
         return fragment;
     }
@@ -76,7 +80,7 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-
+        // a new view for a fragment
         View view = inflater.inflate(R.layout.fragment_profile_edit, container, false);
         setHasOptionsMenu(false);
 
@@ -85,15 +89,15 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
-        initializeObjects(view);
+        initializeObjects(view); // initialize the objects within this method (back,confirm,profileimage,name and back)
 
-        mAuth = FirebaseAuth.getInstance();
-        userId = mAuth.getCurrentUser().getUid();
+        mAuth = FirebaseAuth.getInstance(); // make sure a user is signed in
+        userId = mAuth.getCurrentUser().getUid(); // get the currend User ID , needed to get user details from the user collection
 
         mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
 
-        mUserDatabase.keepSynced(true);
-        getUserInfo();
+        mUserDatabase.keepSynced(true); // keep users signed in
+        getUserInfo(); // initialize method to get the name and image about the user from the database
         deactivateButton = (Button) view.findViewById(R.id.deactivate);
 
         mProfileImage.setOnClickListener(new View.OnClickListener() {
@@ -103,7 +107,7 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
                 intent.setType("image/*");
                 startActivityForResult(intent, 1);
             }
-        });
+        }); // the user clicks the image view to change their profile picture, and sets the image in the collection
 
         deactivateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,6 +119,7 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
         return view;
     }
 
+    // deactivate the user account
     public void deactivate(final View view) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if(user!=null){
@@ -133,28 +138,28 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
             });
         }
     }
-
+        // get the users information (name and image) the method getActivity() is need when using a fragment to get the information from a previous activity
         private void getUserInfo() {
-        name = ((MainActivity)getActivity()).getUser().getName();
-        image = ((MainActivity)getActivity()).getUser().getImage();
+        name = ((SearchActivity)getActivity()).getUser().getName();
+        image = ((SearchActivity)getActivity()).getUser().getImage();
 
-        if(((MainActivity)getActivity()).getUser().getName() != null)
-            mName.setText(((MainActivity)getActivity()).getUser().getName());
+        if(((SearchActivity)getActivity()).getUser().getName() != null)
+            mName.setText(((SearchActivity)getActivity()).getUser().getName());
 
-        if(((MainActivity)getActivity()).getUser().getImage() != null && getActivity()!=null)
+        if(((SearchActivity)getActivity()).getUser().getImage() != null && getActivity()!=null)
             Glide.with(getActivity())
                     .load(image)
                     .apply(RequestOptions.circleCropTransform())
                     .into(mProfileImage);
     }
 
-    private void saveUserInformation() {
-        ((MainActivity)getActivity()).showProgressDialog("Saving Data...");
+    private void saveUserInformation() { // saving data to the collection within the database.
+        ((SearchActivity)getActivity()).showProgressDialog("Saving Data..."); // displayed when the save (tick) is clicked
 
         if(!mName.getText().toString().isEmpty())
             name = mName.getText().toString();
 
-        Map userInfo = new HashMap();
+        Map userInfo = new HashMap(); // using a map to put and get the information from the database
         userInfo.put("name", name);
 
         if(image != null)
@@ -162,17 +167,19 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
 
         mUserDatabase.updateChildren(userInfo);
 
-        if(resultUri != null) {
+        if(resultUri != null) { // when a user uploads a photo a child is added to the profile image collection of the storage section of firebase
             final StorageReference filePath = FirebaseStorage.getInstance().getReference().child("profile_image").child(userId);
-
+            // the path to the collection
             UploadTask uploadTask = filePath.putFile(resultUri);
             uploadTask.addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    ((MainActivity)getActivity()).clearBackStack();
+                    ((SearchActivity)getActivity()).clearBackStack();
                     return;
                 }
             });
+            // if the activity has been successful the user is sent back to the main activity and the children have update has been successful
+            // the hashmap puts the image into the database aswell and you return to the main activity
             uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -183,23 +190,24 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
                             newImage.put("image", uri.toString());
                             mUserDatabase.updateChildren(newImage);
 
-                            ((MainActivity)getActivity()).clearBackStack();
+                            ((SearchActivity)getActivity()).clearBackStack();
                             return;
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception exception) {
-                            ((MainActivity)getActivity()).clearBackStack();
+                            ((SearchActivity)getActivity()).clearBackStack();
                             return;
                         }
                     });
                 }
             });
         }else{
-            ((MainActivity)getActivity()).dismissProgressDialog();
+            ((SearchActivity)getActivity()).dismissProgressDialog();
             getActivity().onBackPressed();
         }
     }
+    // sign out method
     private void LogOut() {
         FirebaseAuth.getInstance().signOut();
         Intent intent = new Intent(getActivity(), LoginActivity.class);
@@ -208,6 +216,7 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
         getActivity().finish();
     }
 
+    // putting the image in, using a circle crop, this uses a bitmap which is used for image when putting or getting an image into a specific position
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -228,7 +237,7 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.back:
-                ((MainActivity)getActivity()).clearBackStack();
+                ((SearchActivity)getActivity()).clearBackStack();
                 break;
             case R.id.confirm:
                 saveUserInformation();
@@ -243,21 +252,19 @@ public class ProfileEditFragment extends Fragment implements View.OnClickListene
         mName = view.findViewById(R.id.name);
         mProfileImage = view.findViewById(R.id.profileImage);
         mBack = view.findViewById(R.id.back);
-        mConfirm = view.findViewById(R.id.confirm);
+        //mConfirm = view.findViewById(R.id.confirm);
         mLogout = view.findViewById(R.id.logout);
         mBack.setOnClickListener(this);
-        mConfirm.setOnClickListener(this);
+        //mConfirm.setOnClickListener(this);
         mLogout.setOnClickListener(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
     }
     @Override
     public void onStop() {
         super.onStop();
-        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
     }
 }
